@@ -1,7 +1,6 @@
 package app.repository;
 
 import app.domain.Customer;
-import app.domain.Product;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
