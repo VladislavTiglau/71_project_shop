@@ -81,7 +81,7 @@ public class CustomerService {
                 .forEach(x -> x.setActive(false));
     }
 
-    public void restoreByName(int id) throws IOException, CustomerNotFoundException {
+    public void restoreById(int id) throws IOException, CustomerNotFoundException {
         Customer customer = repository.findById(id);
 
         if (customer != null) {
