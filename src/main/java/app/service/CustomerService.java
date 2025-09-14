@@ -4,6 +4,7 @@ import app.domain.Customer;
 import app.domain.Product;
 import app.exception.CustomerNotFoundException;
 import app.exception.CustomerSaveExcteption;
+import app.exception.ProductNotFoundExcepton;
 import app.exception.ProductSaveException;
 import app.repository.CustomerRepository;
 import app.repository.ProductRepository;
@@ -49,12 +50,13 @@ public class CustomerService {
     public Customer getActiveCustomerById(int id) throws IOException, CustomerNotFoundException {
         Customer customer = repository.findById(id);
 
-        if (customer == null || !customer.isActive()){
+        if (customer == null || !customer.isActive()) {
             throw new CustomerNotFoundException(id);
         }
         return customer;
 
     }
+
     public void update(Customer customer) throws CustomerSaveExcteption, IOException {
         if (customer == null) {
             throw new CustomerSaveExcteption("Покупатель не может быть null");
@@ -67,7 +69,66 @@ public class CustomerService {
         }
         repository.update(customer);
     }
+
     public void deleteById(int id) throws IOException, CustomerNotFoundException {
         getActiveCustomerById(id).setActive(false);
     }
+
+    public void deleteByName(String name) throws IOException {
+        getAllActiveCustomers()
+                .stream()
+                .filter(x -> x.getName().equals(name))
+                .forEach(x -> x.setActive(false));
+    }
+
+    public void restoreByName(int id) throws IOException, CustomerNotFoundException {
+        Customer customer = repository.findById(id);
+
+        if (customer != null) {
+            customer.setActive(true);
+        } else {
+            throw new CustomerNotFoundException(id);
+        }
+
+    }
+
+    public int getActiveCustomerCount() throws IOException {
+        return getAllActiveCustomers().size();
+    }
+
+    public double getCustomerCartTotalPrice(int id) throws IOException, CustomerNotFoundException {
+        return getActiveCustomerById(id)
+                .getProducts()
+                .stream()
+                .filter(Product::isActive)
+                .mapToDouble(Product::getPrice)
+                .sum();
+    }
+
+    public double getCustomerCartAveragePrice(int id) throws IOException, CustomerNotFoundException {
+        return getActiveCustomerById(id)
+                .getProducts()
+                .stream()
+                .filter(Product::isActive)
+                .mapToDouble(Product::getPrice)
+                .average()
+                .orElse(0.0);
+    }
+
+    public void addProductToCustomerCard(int customerId, int productId) throws IOException, CustomerNotFoundException, ProductNotFoundExcepton {
+        Customer customer = getActiveCustomerById(productId);
+        Product product = productService.getActiveProductById(productId);
+        customer.getProducts().add(product);
+    }
+
+    public void removeProductFromCustomerCart(int customerId, int productId) throws IOException, CustomerNotFoundException, ProductNotFoundExcepton {
+        Customer customer = getActiveCustomerById(productId);
+        Product product = productService.getActiveProductById(productId);
+        customer.getProducts().remove(product);
+    }
+
+    public void clearCustomerCart(int id) throws IOException, CustomerNotFoundException {
+        getActiveCustomerById(id).getProducts().clear();
+    }
+
 }
