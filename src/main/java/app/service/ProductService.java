@@ -63,35 +63,46 @@ public class ProductService {
             throw new ProductUpdateException("Цена продукта должна быть положительной");
 
         }
+        product.setActive(true);
         repository.update(product);
     }
 
     public void deleteById(int id) throws ProductNotFoundExcepton, IOException {
-        getActiveProductById(id).setActive(false);
+        Product product = getActiveProductById(id);
+        product.setActive(false);
+        repository.update(product);
     }
 
-    public void deleteByTitle(String title) throws IOException {
-        getAllActiveProducts()
+    public void deleteByTitle(String title) throws IOException, ProductNotFoundExcepton {
+        Product product = getAllActiveProducts()
                 .stream()
                 .filter(x -> x.getTitle().equals(title))
-                .forEach(x -> x.setActive(false));
-
+                .peek(x -> x.setActive(false))
+                .findFirst()
+                .orElseThrow(
+                        () -> new ProductNotFoundExcepton(title)
+                );
+        repository.update(product);
     }
+
 
     public void restoreById(int id) throws IOException, ProductNotFoundExcepton {
         Product product = repository.findById(id);
 
         if (product != null) {
             product.setActive(true);
+            repository.update(product);
         } else {
             throw new ProductNotFoundExcepton(id);
         }
 
     }
+
     public int getActiveProductsCount() throws IOException {
         return getAllActiveProducts().size();
 
     }
+
     public double getActiveProductsTotalCost() throws IOException {
         return getAllActiveProducts()
                 .stream()
@@ -99,13 +110,14 @@ public class ProductService {
                 .sum();
 
     }
+
     public double getActiveProductsAveragePrice() throws IOException {
         int productCount = getActiveProductsCount();
 
         if (productCount == 0) {
             return 0.0;
         }
-        return getActiveProductsTotalCost()/productCount;
+        return getActiveProductsTotalCost() / productCount;
 
     }
 

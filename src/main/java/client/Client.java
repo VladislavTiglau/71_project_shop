@@ -107,11 +107,11 @@ public class Client {
                         break;
                     case "9":
                         System.out.println("Суммарная стоимость продуктов: " +
-                                productController.getActiveProductsCount());
+                                productController.getActiveProductsTotalCost());
                         break;
                     case "10":
                         System.out.println("Средняя стоимость продуктов: " +
-                                productController.getActiveProductsCount());
+                                productController.getActiveProductsAveragePrice());
                         break;
                     case "0":
                         return;
@@ -130,11 +130,11 @@ public class Client {
     public static void customerOperations() {
         while (true) {
             try {
-                System.out.println("Выберете желаемую операцию с продуктами:");
-                System.out.println("1 - сохранить продукт");
-                System.out.println("2 - получить все продукты");
+                System.out.println("Выберете желаемую операцию с покупателям:");
+                System.out.println("1 - сохранить покупателя");
+                System.out.println("2 - получить всех покупателей ");
                 System.out.println("3 - получить покупателя по идентификатору");
-                System.out.println("4 - изменить продукт");
+                System.out.println("4 - изменить покупателя");
                 System.out.println("5 - удалить покупателя по идентификатору");
                 System.out.println("6 - удалить покупателя по имени");
                 System.out.println("7 - восстановить покупателя по идентификатору");
@@ -199,13 +199,13 @@ public class Client {
                         id = Integer.parseInt(scanner.nextLine());
                         System.out.println("Средняя цена корзины покупателя: " +
                                 customerController.getCustomerCartAveragePrice(id));
-                        break;
+                        break;               
                     case "11":
                         System.out.println("Введите идентификатор покупателя");
                         int customerId = Integer.parseInt(scanner.nextLine());
                         System.out.println("Введите идентификатор продукта");
                         int productId = Integer.parseInt(scanner.nextLine());
-                        customerController.addProductToCustomerCard(customerId,productId);
+                        customerController.removeProductFromCustomerCart(customerId,productId);
                         break;
                     case "12":
                         System.out.println("Введите идентификатор покупателя");
@@ -232,4 +232,5 @@ public class Client {
             }
         }
     }
+
 }

@@ -7,11 +7,15 @@
   "id" : 3,
   "title" : "Orange",
   "price" : 122.0,
-  "active" : true
+  "active" : false
 }, {
   "id" : 4,
   "title" : "Banane",
   "price" : 33.0,
   "active" : true
+}, {
+  "id" : 5,
+  "title" : "Kiwi",
+  "price" : 111.0,
+  "active" : true
 } ]
-

@@ -67,18 +67,26 @@ public class CustomerService {
             throw new CustomerSaveExcteption("Имя покупателя не может быть пустым");
 
         }
+        customer.setActive(true);
         repository.update(customer);
     }
 
     public void deleteById(int id) throws IOException, CustomerNotFoundException {
-        getActiveCustomerById(id).setActive(false);
+        Customer customer = getActiveCustomerById(id);
+        customer.setActive(false);
+        repository.update(customer);
     }
 
-    public void deleteByName(String name) throws IOException {
-        getAllActiveCustomers()
+    public void deleteByName(String name) throws IOException, CustomerNotFoundException {
+        Customer customer = getAllActiveCustomers()
                 .stream()
                 .filter(x -> x.getName().equals(name))
-                .forEach(x -> x.setActive(false));
+                .peek(x -> x.setActive(false))
+                .findFirst()
+                .orElseThrow(
+                        () -> new CustomerNotFoundException(name)
+                );
+        repository.update(customer);
     }
 
     public void restoreById(int id) throws IOException, CustomerNotFoundException {
@@ -86,6 +94,7 @@ public class CustomerService {
 
         if (customer != null) {
             customer.setActive(true);
+            repository.update(customer);
         } else {
             throw new CustomerNotFoundException(id);
         }
@@ -119,16 +128,20 @@ public class CustomerService {
         Customer customer = getActiveCustomerById(productId);
         Product product = productService.getActiveProductById(productId);
         customer.getProducts().add(product);
+        repository.update(customer);
     }
 
     public void removeProductFromCustomerCart(int customerId, int productId) throws IOException, CustomerNotFoundException, ProductNotFoundExcepton {
         Customer customer = getActiveCustomerById(productId);
         Product product = productService.getActiveProductById(productId);
         customer.getProducts().remove(product);
+        repository.update(customer);
     }
 
     public void clearCustomerCart(int id) throws IOException, CustomerNotFoundException {
-        getActiveCustomerById(id).getProducts().clear();
+        Customer customer = getActiveCustomerById(id);
+        customer.getProducts().clear();
+        repository.update(customer);
     }
 
 

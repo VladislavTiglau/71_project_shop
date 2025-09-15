@@ -1,16 +1,36 @@
 [ {
   "id" : 1,
   "name" : "Маша",
-  "active" : true,
+  "active" : false,
   "products" : [ ]
 }, {
   "id" : 2,
-  "name" : "Маша",
-  "active" : true,
+  "name" : "Влад",
+  "active" : false,
   "products" : [ ]
 }, {
   "id" : 3,
-  "name" : "Маша",
+  "name" : "Мария",
   "active" : true,
   "products" : [ ]
+}, {
+  "id" : 4,
+  "name" : "Алина",
+  "active" : true,
+  "products" : [ {
+    "id" : 4,
+    "title" : "Banane",
+    "price" : 33.0,
+    "active" : true
+  }, {
+    "id" : 4,
+    "title" : "Banane",
+    "price" : 33.0,
+    "active" : true
+  }, {
+    "id" : 4,
+    "title" : "Banane",
+    "price" : 33.0,
+    "active" : true
+  } ]
 } ]
